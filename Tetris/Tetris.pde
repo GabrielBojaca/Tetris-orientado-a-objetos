@@ -50,3 +50,31 @@ void limpiarTablero(int[][] tableau){
 void keyPressed(){ 
   limpiarTablero(tablero);
 }
+
+class Monomino { 
+  int pos_fila, pos_columna; 
+  Monomino (int fila, int columna) {  
+    pos_fila = fila; 
+    pos_columna = columna; 
+  } 
+  void bajar() { 
+    pos_fila++; 
+  } 
+  void subir() { 
+    pos_fila--; 
+  } 
+  void derecha() { 
+    pos_columna++; 
+  } 
+  void izquierda() { 
+    pos_columna--; 
+  } 
+  
+  int fila(){
+   return pos_fila; 
+  }
+  int columna(){
+   return pos_columna; 
+  }
+
+} 
