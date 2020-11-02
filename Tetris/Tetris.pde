@@ -1,12 +1,13 @@
 int filas = 22;
 int filas_pre = 22;
-int columnas = 10;
+int columnas = 11;
 int columnas_pre = 10;
 
 int[][] tableau = new int[filas][columnas];  
 int[][] previsualizacion = new int[filas][columnas];  
-int[][][] colores = new int[filas][columnas][3];  
-int[][] L= {{-1, 0}, {0, 0}, {0, 1}, {1, 1}};
+int[][][] colores = new int[filas][columnas][3]; 
+int[][] L= {{0, -1}, {0, 0}, {1, 0}, {1, 1}};
+//int[][] L= {{-1, 0}, {0, 0}, {0, 1}, {1, 1}};
 //int[][] L= {{0, 0}, {0, -1}, {-1, 0}, {0, 1}};
 
 ArrayList<Monomino> celdas = new ArrayList<Monomino>();
@@ -18,20 +19,24 @@ int fila_inicial, columna_inicial;
 void setup() {  
   size(820, 820);
 
-  buffer.add(new Monomino(4, 4, 255, 255, 255));
+  buffer.add(new Monomino(10, 4, 255, 255, 255));
   buffer.add(new Monomino(5, 0, 0, 0, 255));
 
   buffer.add(new Monomino(8, 0, 0, 0, 255));
-  agregarPolyomino(8, 5, 4, 0, buffer);
+  agregarPolyomino(0, 5, 4, 0, buffer);
 }
 
 void draw() {
 
   traducirTablero(celdas, tableau, colores);
-  dibujarTablero(410, 10, tableau, colores, 800, 2);
+  dibujarTablero(370, 10, tableau, colores, 800, 2);
 
   text("Buffer: " + buffer.size(), 600, 400);
   text("Celdas: " + celdas.size(), 700, 400);
+  update(buffer, celdas); //Paso todo de buffer a celdas
+  update(celdas, buffer); //El nuevo buffer es el actual estado de celdas
+  
+  interferencia(celdas);
 }
 
 void traducirTablero(ArrayList<Monomino> arrayL_inicio, int[][] array_final, int[][][] array_color) {
@@ -79,8 +84,6 @@ void limpiarTablero(int[][] clean) {
 }
 
 void keyPressed() {
-  update(buffer, celdas); //Paso todo de buffer a celdas
-  update(celdas, buffer); //El nuevo buffer es el actual estado de celdas
   if (key == 's' || key == 'S') {
     moverPolyomino(1, 0, 4, celdas);
   } else if (key == 'w' || key == 'W') {
@@ -154,14 +157,22 @@ void girarPolyomino(int n, ArrayList<Monomino> arrayL ) {
   }
 }
 
-void interferencia(ArrayList<Monomino> arrayL){
+boolean interferencia(ArrayList<Monomino> arrayL) {
   Monomino operador1 = new Monomino(0, 0, 0, 0, 0);
   Monomino operador2 = new Monomino(0, 0, 0, 0, 0);
-  
+
   int cantidadCeldas = arrayL.size(); //obtenemos el tamaño del array donde está el polyominó
-  for (int i = cantidadCeldas-1; i>cantidadCeldas-1-n; i--) { 
-    operador = arrayL.get(i);
-    operador.rotate();
+  for (int i = 0; i<=cantidadCeldas-1; i++) { 
+    operador1 = arrayL.get(i);
+    for (int j = 0; j<=cantidadCeldas-1; j++) {
+      if (j!=i) {
+        operador2 = arrayL.get(j);
+        if (operador1.getFC()[0] == operador2.getFC()[0] && operador1.getFC()[1] == operador2.getFC()[1]) {
+          println("Chale" + millis());
+          return true;
+        }
+      }
+    }
   }
-  
+  return false;
 }

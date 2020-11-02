@@ -53,6 +53,11 @@ class Monomino {
   int getColumna(){
     return pos_columna;
   }
+  int[] getFC(){
+   int [] _FC = {pos_fila,pos_columna};
+   return _FC;
+   
+  }
   
 
   
