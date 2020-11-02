@@ -14,35 +14,47 @@ ArrayList<Monomino> celdas = new ArrayList<Monomino>();
 ArrayList<Monomino> buffer = new ArrayList<Monomino>();
 int total_celdas=celdas.size(); 
 int fila_inicial, columna_inicial;
-
+boolean colision = false;
 
 void setup() {  
-  size(820, 820);
+  size(1000, 820);
 
-  buffer.add(new Monomino(10, 4, 255, 255, 255));
-  buffer.add(new Monomino(5, 0, 0, 0, 255));
+  buffer.add(new Monomino(10, 4, 255, 255, 255,0,0));
+  buffer.add(new Monomino(11, 4, 255, 255, 255,0,0));
+  buffer.add(new Monomino(12, 4, 255, 255, 255,0,0));
+  buffer.add(new Monomino(5, 0, 0, 0, 255,0,0));
+  
+  celdas.add(new Monomino(5, 10, 0, 0, 255,0,0));
 
-  buffer.add(new Monomino(8, 0, 0, 0, 255));
+
+
+  buffer.add(new Monomino(8, 0, 0, 0, 255,0,0));
+  buffer.add(new Monomino(9, 0, 0, 0, 255,0,0));
   agregarPolyomino(0, 5, 4, 0, buffer);
 }
 
 void draw() {
 
   traducirTablero(celdas, tableau, colores);
-  dibujarTablero(370, 10, tableau, colores, 800, 2);
+  dibujarTablero(500, 10, tableau, colores, 800, 2);
+  
+  traducirTablero(buffer, previsualizacion,colores);
+  
+  dibujarTablero(10, 10, previsualizacion, colores, 800, 2);
+  
+  
 
   text("Buffer: " + buffer.size(), 600, 400);
   text("Celdas: " + celdas.size(), 700, 400);
-  update(buffer, celdas); //Paso todo de buffer a celdas
-  update(celdas, buffer); //El nuevo buffer es el actual estado de celdas
-  
-  interferencia(celdas);
+ // update(buffer, celdas); //Paso todo de buffer a celdas
+ // update(celdas, buffer); //El nuevo buffer es el actual estado de celdas
+ 
 }
 
 void traducirTablero(ArrayList<Monomino> arrayL_inicio, int[][] array_final, int[][][] array_color) {
   int i, j;
-  Monomino test = new Monomino(0, 0, 0, 0, 0); 
-  limpiarTablero(tableau);
+  Monomino test = new Monomino(0, 0, 0, 0, 0,0,0); 
+  limpiarTablero(array_final);
   for (int k = 0; k<=arrayL_inicio.size()-1; k++) {
     test = arrayL_inicio.get(k);
     i = test.getFila();
@@ -84,9 +96,20 @@ void limpiarTablero(int[][] clean) {
 }
 
 void keyPressed() {
+  colision = interferencia(buffer);
   if (key == 's' || key == 'S') {
-    moverPolyomino(1, 0, 4, celdas);
-  } else if (key == 'w' || key == 'W') {
+    moverPolyomino(1, 0, 4, buffer);
+    if(interferencia(buffer)){ //Hay interferencia?
+      println("paila pana");
+      update(celdas, buffer); //Buffer se vuelve celdas
+
+    }
+    else{
+      println("fresco pana");
+      update(buffer, celdas); //Celdas e vuelve buffer
+    }
+  }
+   else if (key == 'w' || key == 'W') {
     moverPolyomino(1, 0, 4, celdas);
   } else if (key == 'd' || key == 'D') {
     moverPolyomino(0, 1, 4, celdas);
@@ -102,7 +125,10 @@ void keyPressed() {
 
 
 void update(ArrayList<Monomino> partida, ArrayList<Monomino> llegada ) { //Se busca que llegada se vuelva igual a partida
-  Monomino operador = new Monomino(0, 0, 0, 0, 0); 
+  Monomino operador = new Monomino(0, 0, 0, 0, 0,0,0); 
+  
+  //ArrayList<Monomino> copia = new ArrayList<Monomino>();
+  
   //if(llegada.size()==0){}
   //Borramos todo de llegada
   int cantidad_inicial = llegada.size(); //Obtenemos el tamaño del array de llegada
@@ -113,8 +139,10 @@ void update(ArrayList<Monomino> partida, ArrayList<Monomino> llegada ) { //Se bu
   }
   for (int i=0; i<=partida.size()-1; i++) { //Agregamos todos los elementos de partida a llegada
     operador = partida.get(i);
-    llegada.add(operador);
+    llegada.add(new Monomino(operador.getFila(), operador.getColumna(), operador.getR(), operador.getG(), operador.getB(),operador.getAu_F(),operador.getAu_C()));
   }
+  
+  //salida = llegada;
 }
 
 void agregarPolyomino(int fila, int columna, int n, int tipo, ArrayList<Monomino> arrayL) {
@@ -123,24 +151,26 @@ void agregarPolyomino(int fila, int columna, int n, int tipo, ArrayList<Monomino
   for (int i=0; i<n; i++) {
     switch(tipo) {
     case 0:
-      arrayL.add(new Monomino(L[i][0]+fila, L[i][1]+columna, 255, 255, 255));
+      arrayL.add(new Monomino(L[i][0]+fila, L[i][1]+columna, 255, 255, 255,0,0));
       break;
     }
   }
 }
 
 void moverPolyomino(int des_fila, int des_columna, int n, ArrayList<Monomino> arrayL ) {
-  Monomino operador = new Monomino(0, 0, 0, 0, 0); //Creamos el operador
+  Monomino operador = new Monomino(0, 0, 0, 0, 0,0,0); //Creamos el operador
   int cantidadCeldas = arrayL.size(); //obtenemos el tamaño del array donde está el polyominó
   for (int i = cantidadCeldas-1; i>cantidadCeldas-1-n; i--) { 
     operador = arrayL.get(i);
     operador.aumentarFila(des_fila);
     operador.aumentarColumna(des_columna);
   }
+  
+
 }
 
 void reflejarPolyomino(int n, ArrayList<Monomino> arrayL ) {
-  Monomino operador = new Monomino(0, 0, 0, 0, 0); //Creamos el operador
+  Monomino operador = new Monomino(0, 0, 0, 0, 0,0,0); //Creamos el operador
   int cantidadCeldas = arrayL.size(); //obtenemos el tamaño del array donde está el polyominó
   for (int i = cantidadCeldas-1; i>cantidadCeldas-1-n; i--) { 
     operador = arrayL.get(i);
@@ -149,7 +179,7 @@ void reflejarPolyomino(int n, ArrayList<Monomino> arrayL ) {
 }
 
 void girarPolyomino(int n, ArrayList<Monomino> arrayL ) {
-  Monomino operador = new Monomino(0, 0, 0, 0, 0); //Creamos el operador
+  Monomino operador = new Monomino(0, 0, 0, 0, 0,0,0); //Creamos el operador
   int cantidadCeldas = arrayL.size(); //obtenemos el tamaño del array donde está el polyominó
   for (int i = cantidadCeldas-1; i>cantidadCeldas-1-n; i--) { 
     operador = arrayL.get(i);
@@ -158,8 +188,8 @@ void girarPolyomino(int n, ArrayList<Monomino> arrayL ) {
 }
 
 boolean interferencia(ArrayList<Monomino> arrayL) {
-  Monomino operador1 = new Monomino(0, 0, 0, 0, 0);
-  Monomino operador2 = new Monomino(0, 0, 0, 0, 0);
+  Monomino operador1 = new Monomino(0, 0, 0, 0, 0,0,0);
+  Monomino operador2 = new Monomino(0, 0, 0, 0, 0,0,0);
 
   int cantidadCeldas = arrayL.size(); //obtenemos el tamaño del array donde está el polyominó
   for (int i = 0; i<=cantidadCeldas-1; i++) { 
@@ -168,7 +198,7 @@ boolean interferencia(ArrayList<Monomino> arrayL) {
       if (j!=i) {
         operador2 = arrayL.get(j);
         if (operador1.getFC()[0] == operador2.getFC()[0] && operador1.getFC()[1] == operador2.getFC()[1]) {
-          println("Chale" + millis());
+         // println("Chale" + millis());
           return true;
         }
       }
