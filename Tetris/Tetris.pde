@@ -6,7 +6,7 @@ int columnas_pre = 10;
 int[][] tableau = new int[filas][columnas];  
 int[][] previsualizacion = new int[filas][columnas];  
 int[][][] colores = new int[filas][columnas][3]; 
-int[][] L= {{0, -1}, {0, 0}, {1, 0}, {1, 1}};
+int[][] L= {{0, 0}, {0, -1},  {1, 0}, {1, 1}};
 //int[][] L= {{-1, 0}, {0, 0}, {0, 1}, {1, 1}};
 //int[][] L= {{0, 0}, {0, -1}, {-1, 0}, {0, 1}};
 
@@ -14,7 +14,12 @@ ArrayList<Monomino> celdas = new ArrayList<Monomino>();
 ArrayList<Monomino> buffer = new ArrayList<Monomino>();
 int total_celdas=celdas.size(); 
 int fila_inicial, columna_inicial;
-boolean alarma = false;
+int orden_juego= 0;
+int fila_origen= 0;
+int columna_origen = 5;
+
+
+boolean choque_inferior = false;
 
 void setup() {  
   size(1000, 820);
@@ -26,15 +31,25 @@ void setup() {
 
   celdas.add(new Monomino(5, 10, 0, 0, 255, 0, 0));
 
+  orden_juego = 4;
+
+  if(orden_juego == 4){
+   fila_origen = 0;
+   columna_origen = 5;
+  }
 
 
   buffer.add(new Monomino(8, 0, 0, 0, 255, 0, 0));
   buffer.add(new Monomino(9, 0, 0, 0, 255, 0, 0));
-  agregarPolyomino(0, 5, 4, 0, buffer);
+  agregarPolyomino(fila_origen, columna_origen, orden_juego, 0, buffer);
+  update(buffer, celdas);
 }
 
 void draw() {
-
+ if(choque_inferior ==true){
+   agregarPolyomino(fila_origen, columna_origen, orden_juego, 0, buffer);
+   choque_inferior = false;
+ }
   traducirTablero(celdas, tableau, colores);
   dibujarTablero(500, 10, tableau, colores, 800, 2);
 
@@ -100,40 +115,40 @@ void keyPressed() {
 
 
   if (key == 's' || key == 'S') {
-    if (moverPolyomino(1, 0, 4, buffer)) { //Hay interferencia?
-      println("paila pana");
+    if (moverPolyomino(1, 0, orden_juego, buffer)) { //Hay interferencia?
       update(celdas, buffer); //Buffer se vuelve celdas
+      choque_inferior=true;
     } else {
-      println("fresco pana");
       update(buffer, celdas); //Celdas e vuelve buffer
     }
   } else if (key == 'w' || key == 'W') {
-    if (moverPolyomino(-1, 0, 4, buffer)) { //Hay interferencia?
+    if (moverPolyomino(-1, 0, orden_juego, buffer)) { //Hay interferencia?
       update(celdas, buffer); //Buffer se vuelve celdas
     } else {
       update(buffer, celdas); //Celdas e vuelve buffer
     }
   } else if (key == 'd' || key == 'D') {
-    if (moverPolyomino(0, 1, 4, buffer)) { //Hay interferencia?
+    if (moverPolyomino(0, 1, orden_juego, buffer)) { //Hay interferencia?
       update(celdas, buffer); //Buffer se vuelve celdas
     } else {
       update(buffer, celdas); //Celdas e vuelve buffer
     }
   } else if (key == 'a' || key == 'A') {
 
-    if (moverPolyomino(0, -1, 4, buffer)) { //Hay interferencia?
+    if (moverPolyomino(0, -1, orden_juego, buffer)) { //Hay interferencia?
       update(celdas, buffer); //Buffer se vuelve celdas
     } else {
       update(buffer, celdas); //Celdas e vuelve buffer
     }
   } else if (key == 'q' || key == 'Q') {
-    if (girarPolyomino(4, buffer)) { //Hay interferencia?
+    if (girarPolyomino(orden_juego, buffer)) { //Hay interferencia?
       update(celdas, buffer); //Buffer se vuelve celdas
-      alarma = false;
     } else {
       update(buffer, celdas); //Celdas e vuelve buffer
     }
   }
+obtener_centro(buffer,4);
+
 }
 
 
@@ -161,7 +176,7 @@ void agregarPolyomino(int fila, int columna, int n, int tipo, ArrayList<Monomino
   for (int i=0; i<n; i++) {
     switch(tipo) {
     case 0:
-      arrayL.add(new Monomino(L[i][0]+fila, L[i][1]+columna, 255, 255, 255, 0, 0));
+      arrayL.add(new Monomino(L[i][0]+fila, L[i][1]+columna, 255, 0, 0, 0, 0));
       break;
     }
   }
@@ -230,4 +245,14 @@ boolean interferencia(ArrayList<Monomino> arrayL, int l_fila, int l_columna) {
     }
   }
   return false;
+}
+
+void obtener_centro(ArrayList<Monomino> arrayL,int n){
+  int centrof,centroc;
+  Monomino operador = new Monomino(0, 0, 0, 0, 0, 0, 0);
+  int cantidadCeldas = arrayL.size(); 
+  operador = arrayL.get(cantidadCeldas-n);
+  centrof = operador.getFila();
+  centroc = operador.getColumna();
+  println("fila: " + centrof + " columna: " + centroc);
 }

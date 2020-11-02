@@ -17,7 +17,8 @@ class Monomino {
     int j = columna_inicial + aumento_columna;  
     pos_fila = pos_fila-k; //levamos al origen
     pos_columna = pos_columna-j; //levamos al origen
-    pos_fila = -pos_fila;
+    
+    pos_columna = -pos_columna;
     pos_fila = pos_fila + k;
     pos_columna = pos_columna + j;    
   }
