@@ -14,7 +14,7 @@ ArrayList<Monomino> celdas = new ArrayList<Monomino>();
 ArrayList<Monomino> buffer = new ArrayList<Monomino>();
 int total_celdas=celdas.size(); 
 int fila_inicial, columna_inicial;
-boolean colision = false;
+boolean alarma = false;
 
 void setup() {  
   size(1000, 820);
@@ -97,7 +97,7 @@ void limpiarTablero(int[][] clean) {
 void keyPressed() {
   //result = test ? expression1 : expression2
   // s = (i < 50) ? 0 : 255;
-  colision = interferencia(buffer);  
+
 
   if (key == 's' || key == 'S') {
     if (moverPolyomino(1, 0, 4, buffer)) { //Hay interferencia?
@@ -129,6 +129,7 @@ void keyPressed() {
   } else if (key == 'q' || key == 'Q') {
     if (girarPolyomino(4, buffer)) { //Hay interferencia?
       update(celdas, buffer); //Buffer se vuelve celdas
+      alarma = false;
     } else {
       update(buffer, celdas); //Celdas e vuelve buffer
     }
@@ -175,7 +176,7 @@ boolean moverPolyomino(int des_fila, int des_columna, int n, ArrayList<Monomino>
     operador.aumentarColumna(des_columna);
   }
 
-  if (interferencia(arrayL)) {
+  if (interferencia(arrayL, filas, columnas)) {
     return true;
   }
 
@@ -199,14 +200,14 @@ boolean girarPolyomino(int n, ArrayList<Monomino> arrayL ) {
     operador.rotate();
   }
 
-  if (interferencia(arrayL)) {
+  if (interferencia(arrayL, filas, columnas)) {
     return true;
   } else {
     return false;
   }
 }
 
-boolean interferencia(ArrayList<Monomino> arrayL) {
+boolean interferencia(ArrayList<Monomino> arrayL, int l_fila, int l_columna) {
   Monomino operador1 = new Monomino(0, 0, 0, 0, 0, 0, 0);
   Monomino operador2 = new Monomino(0, 0, 0, 0, 0, 0, 0);
 
@@ -222,6 +223,10 @@ boolean interferencia(ArrayList<Monomino> arrayL) {
           return true;
         }
       }
+    }
+    //*****************Colision superior o inferior*************//   //*************************Colision Lateral******************//
+    if (operador1.getFC()[0] < 0 || operador1.getFC()[0] > l_fila-1  || operador1.getFC()[1] < 0 || operador1.getFC()[1] > l_columna-1 ) {
+      return true;
     }
   }
   return false;
