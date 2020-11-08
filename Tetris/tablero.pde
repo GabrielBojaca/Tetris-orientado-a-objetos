@@ -74,12 +74,14 @@ class Tablero {
               vertex(((j*_ancho/_columnas)+_x)-0.49 * (_ancho/_columnas), (((i-_filas_ocultas)*_alto/(_filas-_filas_ocultas))+_y) - 0.86602 * (_ancho/_columnas));
               endShape(CLOSE);
             } else if (_geo ==1) {
-
               polygon((j*_ancho/_columnas)+_x, ((i-_filas_ocultas)*_alto/(_filas-_filas_ocultas))+_y, (_ancho/_columnas)/2, 6);
             } else if (_geo ==2) {
               rect((j*_ancho/_columnas)+_x, ((i-_filas_ocultas)*_alto/(_filas-_filas_ocultas))+_y, _ancho/_columnas, _alto/(_filas-_filas_ocultas));
             } else if (_geo ==3) {
               ellipse((j*_ancho/_columnas)+_x, ((i-_filas_ocultas)*_alto/(_filas-_filas_ocultas))+_y, (_ancho/_columnas), _alto/(_filas-_filas_ocultas));
+            }
+            else if(_geo ==4){
+              polygon((j*_ancho/_columnas)+_x, ((i-_filas_ocultas)*_alto/(_filas-_filas_ocultas))+_y, (_ancho/_columnas), 6);
             }
           }
 

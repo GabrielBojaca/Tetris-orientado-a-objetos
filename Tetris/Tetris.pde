@@ -332,11 +332,11 @@ void play() {
 
 
   if (choque_inferior ==true && game_over==false) {  
-    tiempo_caida -= 10;
+    tiempo_caida -= 5;
     if (buf.identificarFilas().length>0) {
       filas_eliminadas += buf.identificarFilas().length;
       randomGeoVal += int(random(1, 3));
-      randomGeoVal %=4;
+      randomGeoVal %=5;
       comodines += buf.identificarFilas().length;
       puntaje += 100 * pow(2, buf.identificarFilas().length);
       buf.quitarFilas(buf.identificarFilas());
