@@ -63,8 +63,10 @@ class Monomino {
   int getAu_C() {
     return aumento_columna;
   }
-
+  
   color getColor() {
     return _c;
   }
+
+
 } 

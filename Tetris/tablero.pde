@@ -214,13 +214,13 @@ class Tablero {
           }
         }
       }
-      //*****************Colision superior o inferior*************//   //*************************Colision Lateral******************//
+      //_____________Colision superior o inferior_________-_____//   //--------------------------Colision Lateral---------------------//
       if (operador1.getFC()[0] < 0 || operador1.getFC()[0] > _filas-1  || operador1.getFC()[1] < 0 || operador1.getFC()[1] > _columnas-1 ) {
         return true;
       }
     }
     return false;
-  }
+  } 
 
   ArrayList<Monomino> retornar() {    
     return arrayL;

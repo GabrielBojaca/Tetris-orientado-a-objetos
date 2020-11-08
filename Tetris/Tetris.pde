@@ -50,6 +50,7 @@ boolean enableComodines = true;
 boolean enablePsycho = false;
 boolean enableStroke = true;
 boolean enableRandomGeo = false;
+boolean gameStop = false;
 int randomGeoVal = 0;
 
 void setup() {
@@ -64,19 +65,30 @@ void setup() {
 
 
 void draw() {
- // println(frameRate);
+  // println(frameRate);
 
 
   if (pantallaSet) {
     configuraciones();
-    
   } 
   if (pantallaPlay) {
 
-    
+
     play();
   }
+  if (gameStop) {
+    juegoPerdido();
+  }
 }
+void juegoPerdido() {
+  fill(255);
+  textSize(80);
+  textAlign(CENTER, CENTER);
+  text("Game Over: ", width/2, height/2);
+  textSize(80);
+  text("Presiona P para continuar", width/2, height/1.4);
+}
+
 
 void configuraciones() { //Determinar el grado del juego
 
@@ -173,47 +185,48 @@ void configuraciones() { //Determinar el grado del juego
 
 void play() {  
   fill(255);
-  rect(850/filas,height/((filas-4)+2)+200,240,110);
+  rect(850/filas, height/((filas-4)+2)+200, 240, 110);
   fill(0);
   textSize(40);
-  textAlign(CENTER,CENTER);
-  text("Puntaje: " ,(850/filas)+125, height/((filas-4)+2)+200+25);
-  text(puntaje,(850/filas)+125, height/((filas-4)+2)+200+30+50);
-  
+  textAlign(CENTER, CENTER);
+  text("Puntaje: ", (850/filas)+125, height/((filas-4)+2)+200+25);
+  text(puntaje, (850/filas)+125, height/((filas-4)+2)+200+30+50);
+
   fill(255);
-  rect(850/filas,height/((filas-4)+2)+320,240,90);
+  rect(850/filas, height/((filas-4)+2)+320, 240, 90);
   fill(0);
   textSize(29);
-  textAlign(CENTER,CENTER);
-  text("Filas eliminadas: " ,(850/filas)+125, height/((filas-4)+2)+320+20);
+  textAlign(CENTER, CENTER);
+  text("Filas eliminadas: ", (850/filas)+125, height/((filas-4)+2)+320+20);
   textSize(40);
-  text(filas_eliminadas,(850/filas)+125, height/((filas-4)+2)+320+55);
-  
+  text(filas_eliminadas, (850/filas)+125, height/((filas-4)+2)+320+55);
+
   fill(255);
-  rect(850/filas,height/((filas-4)+2)+320+100,240,90);
+  rect(850/filas, height/((filas-4)+2)+320+100, 240, 90);
   fill(0);
   textSize(29);
-  textAlign(CENTER,CENTER);
-  text("Nivel" ,(850/filas)+125, height/((filas-4)+2)+320+20+100);
+  textAlign(CENTER, CENTER);
+  text("Nivel", (850/filas)+125, height/((filas-4)+2)+320+20+100);
   textSize(40);
-  text((filas_eliminadas/10)+1,(850/filas)+125, height/((filas-4)+2)+320+55+100);
-  
-  if(enableComodines){
-  fill(255);
-  rect(850/filas,height/((filas-4)+2)+320+100+100,240,90);
-  fill(0);
-  textSize(29);
-  textAlign(CENTER,CENTER);
-  text("Comodin" ,(850/filas)+125, height/((filas-4)+2)+320+20+100+100);
-  textSize(40);
-  text(comodines,(850/filas)+125, height/((filas-4)+2)+320+55+100+100);
+  text((filas_eliminadas/10)+1, (850/filas)+125, height/((filas-4)+2)+320+55+100);
+
+  if (enableComodines) {
+    fill(255);
+    rect(850/filas, height/((filas-4)+2)+320+100+100, 240, 90);
+    fill(0);
+    textSize(29);
+    textAlign(CENTER, CENTER);
+    text("Comodin", (850/filas)+125, height/((filas-4)+2)+320+20+100+100);
+    textSize(40);
+    text(comodines, (850/filas)+125, height/((filas-4)+2)+320+55+100+100);
   }
-  
-  
-  
+
+
+
   if (game_over==true) {
     pantallaPlay=false; 
-    pantallaSet=true; 
+    pantallaSet=false;
+    gameStop=true;
     estado_config = 0;
     choque_inferior = false;
   }
@@ -372,7 +385,7 @@ void play() {
   prev.traducirTablero();
   prev.dibujarTablero(true, enablePsycho, false, 0);
 
- 
+
 
   if (keyPressed) {
 
@@ -436,6 +449,13 @@ void play() {
 }
 
 void keyPressed() {
+  if ((key == 'p' || key == 'P')&& gameStop) {
+    gameStop=false;
+    pantallaSet=true;
+    filas+=1;
+    key = ' ';
+  }
+
 
   if ((key == 'q' || key == 'Q')&& pantallaSet) {
     filas+=1;
@@ -448,13 +468,17 @@ void keyPressed() {
 
   if ((key == 'e' || key == 'E')&& pantallaSet) {
     columnas+=1;
-    if(columnas>32){columnas = 32;}
+    if (columnas>32) {
+      columnas = 32;
+    }
     key = ' ';
   }
 
   if ((key == 'd' || key == 'D')&& pantallaSet) {
     columnas-=1;
-    if(columnas<8){columnas=8;}
+    if (columnas<8) {
+      columnas=8;
+    }
     key = ' ';
   }
 
@@ -506,7 +530,8 @@ void update(ArrayList<Monomino> partida, ArrayList<Monomino> llegada ) { //Se bu
 
   for (int i=0; i<=partida.size()-1; i++) { //Agregamos todos los elementos de partida a llegada
     operador = partida.get(i);
-    llegada.add(new Monomino(operador.getFila(), operador.getColumna(), operador.getColor(), operador.getAu_F(), operador.getAu_C()));
+    //llegada.add(new Monomino(operador.getFila(), operador.getColumna(), operador.getColor(), operador.getAu_F(), operador.getAu_C()));
+    llegada.add(new Monomino(operador.pos_fila, operador.pos_columna, operador._c, operador.aumento_fila, operador.aumento_columna));
   }
 }
 
@@ -533,8 +558,5 @@ void comprobarGame_over(ArrayList<Monomino> arrayL) {
     if (ficha.interferencia()) {
       game_over = true;
     }
-  }
-  if (game_over) {
-    background(255);
   }
 }
