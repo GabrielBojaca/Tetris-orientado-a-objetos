@@ -128,7 +128,7 @@ puntaje += 100 * pow(2, filas_quitadas-1);}
 ## Instrucciones de juego
 
 Cada una de las pantallas del juego está pensada para hacer explicitas las acciones del jugador, o almenos, darle la informacion suficiente para la proxima pantalla de juego.
-
+Presiona "P" para empezar el juego.
 
 ## Posibles mejoras
 
