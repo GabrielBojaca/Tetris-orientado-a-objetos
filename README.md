@@ -139,7 +139,7 @@ Cada una de las pantallas del juego está pensada para hacer explicitas las acci
 ## Conclusiones
 
 - El paradigma de programacion orientada a objetos logró reducir la cantidad de lineas de codigo del programa.
-- - El paradigma de programacion orientada a objetos facilito  la generalizacion del algoritmo de deteccion de colisiones.
+- El paradigma de programacion orientada a objetos facilito  la generalizacion del algoritmo de deteccion de colisiones.
 - Se logró optimizar la forma en que los poliominos se ingresan al videojuego.
 - El paradigma de programacion orientada a objetos permite tener mucho más control sobre las caracteristicas de cada elemento del tetris.
 
